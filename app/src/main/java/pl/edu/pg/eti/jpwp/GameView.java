@@ -11,30 +11,26 @@ import android.view.SurfaceView;
 import android.graphics.Paint;
 import android.graphics.Color;
 
-import static java.lang.StrictMath.round;
-
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
-    volatile boolean touched = false;
-    volatile float touched_x, touched_y;
+    Manekin manekin;
+    private Paint paint = new Paint();
+    private Bitmap floor;
+    private boolean touched = false;
+    private boolean moveHead = false;
+    private float touched_x, touched_y, touched_x_old, touched_y_old;
     private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     public static long averageFPS;
-    private Paint paint = new Paint();
-
-    private Bitmap manekin = Bitmap.createScaledBitmap(
-            BitmapFactory.decodeResource(getResources(),R.drawable.manekin),
-            (int)round(0.7*screenWidth), (int)round(0.9*screenHeight), true);
-    private Bitmap floor = Bitmap.createScaledBitmap(
-            BitmapFactory.decodeResource(getResources(),R.drawable.floor),
-            screenWidth, screenHeight, true);
 
     public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
+
+        manekin = new Manekin(context);
     }
 
     public void update() {
@@ -46,14 +42,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
 
         canvas.drawBitmap(floor, 0, 0, null);
-
-        canvas.drawBitmap(
-                manekin,
-                screenWidth/2 - manekin.getWidth()/2,
-                screenHeight - manekin.getHeight(),
-                null
-        );
-
+        manekin.draw(canvas);
         canvas.drawText("FPS:" + Long.toString(averageFPS),20,50, paint);
     }
 
@@ -64,13 +53,16 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
         paint.setColor(Color.WHITE);
         paint.setTextSize(50);
-
         thread.setRunning(true);
         thread.start();
 
+        floor = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(getResources(),R.drawable.floor),
+                screenWidth, screenHeight, true);
     }
 
     @Override
@@ -89,7 +81,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // TODO Auto-generated method stub
 
         touched_x = event.getX();
         touched_y = event.getY();
@@ -98,12 +89,26 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         switch(action){
             case MotionEvent.ACTION_DOWN:
                 touched = true;
+                if ((touched_x > manekin.getHeadX()) && (touched_x < manekin.getHeadX() + manekin.getHeadWidth())
+                        && (touched_y > manekin.getHeadY()) && (touched_y < manekin.getHeadY() + manekin.getHeadHeight())) {
+                    moveHead = true;
+                }
+                touched_x_old = event.getX();
+                touched_y_old = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (moveHead) {
+                    manekin.setHeadTilt(
+                            (int) touched_x - (int) touched_x_old,
+                            (int) touched_y - (int) touched_y_old
+
+                    );
+                }
                 touched = true;
                 break;
             case MotionEvent.ACTION_UP:
                 touched = false;
+                moveHead = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
                 touched = false;
@@ -113,6 +118,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 break;
             default:
         }
+
+        touched_x_old = touched_x;
+        touched_y_old = touched_y;
         return true; //processed
     }
 }
