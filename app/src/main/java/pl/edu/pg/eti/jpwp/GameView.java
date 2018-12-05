@@ -15,7 +15,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
     Manekin manekin;
     private Paint paint = new Paint();
-    private Bitmap floor;
+    private Bitmap imgFloor;
     private boolean touched = false;
     private boolean moveHead = false;
     private float touched_x, touched_y, touched_x_old, touched_y_old;
@@ -28,12 +28,19 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
         super(context);
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
-        setFocusable(true);
-
         manekin = new Manekin(context);
+        imgFloor = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(getResources(),R.drawable.floor),
+                screenWidth, screenHeight, true);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(50);
+        setFocusable(true);
     }
 
     public void update() {
+        manekin.update();
+        manekin.head.getX();
 
     }
 
@@ -41,7 +48,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        canvas.drawBitmap(floor, 0, 0, null);
+        canvas.drawBitmap(imgFloor, 0, 0, null);
         manekin.draw(canvas);
         canvas.drawText("FPS:" + Long.toString(averageFPS),20,50, paint);
     }
@@ -53,16 +60,8 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(50);
         thread.setRunning(true);
         thread.start();
-
-        floor = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeResource(getResources(),R.drawable.floor),
-                screenWidth, screenHeight, true);
     }
 
     @Override
@@ -81,9 +80,10 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         touched_x = event.getX();
         touched_y = event.getY();
+
+        manekin.head.getX();
 
         int action = event.getAction();
         switch(action){
@@ -97,11 +97,14 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 touched_y_old = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                if ((touched_x < manekin.getHeadX()) || (touched_x > manekin.getHeadX() + manekin.getHeadWidth())
+                        || (touched_y < manekin.getHeadY()) || (touched_y > manekin.getHeadY() + manekin.getHeadHeight())) {
+                    moveHead = false;
+                }
                 if (moveHead) {
                     manekin.setHeadTilt(
                             (int) touched_x - (int) touched_x_old,
                             (int) touched_y - (int) touched_y_old
-
                     );
                 }
                 touched = true;

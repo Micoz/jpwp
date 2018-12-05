@@ -11,11 +11,30 @@ import android.graphics.RectF;
 import static java.lang.StrictMath.round;
 
 public class Manekin {
+    public Head head;
     private Bitmap imgHead, imgBody, imgHeadSkew;
     private int body_x, body_y, head_x, head_y;
     private int headTiltX=0, headTiltY=0, headTiltMax, headTiltMin; // 0,0738636363636364 * bodyHeight
     private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+
+    private class Head {
+        private int x, y;
+        private Bitmap image, imageSkew;
+
+        public Head() {
+
+        }
+
+        public int getX() {
+            return x;
+        }
+
+    }
+
+    private class Body {
+        private int x, y;
+    }
 
     public Manekin(Context context){
         Bitmap bmp;
@@ -28,12 +47,12 @@ public class Manekin {
         h = (int)round(scale * bmp.getHeight());
         imgBody = Bitmap.createScaledBitmap(bmp, w, h, true);
 
+        head.x = 2;
+
         bmp = BitmapFactory.decodeResource(context.getResources(),R.drawable.head);
         w = (int) round( scale * bmp.getWidth() );
         h = (int) round( scale * bmp.getHeight() );
         imgHead = Bitmap.createScaledBitmap(bmp, w, h, true);
-
-        imgHeadSkew = imgHead;
 
         body_x = screenWidth/2 - imgBody.getWidth()/2;
         body_y = screenHeight - imgBody.getHeight();
@@ -55,7 +74,6 @@ public class Manekin {
         } else {
             canvas.drawBitmap(imgHead, head_x, head_y, null);
         }
-
     }
 
     public int getHeadX(){
@@ -88,21 +106,18 @@ public class Manekin {
             headTiltY = 0;
         }
 
-        int w = imgHead.getWidth();
-        int h = imgHead.getHeight();
-        float p = (float)headTiltY/(10*(headTiltMax - headTiltMin));
-        int d = (int)round(0.1*w*p);
-        int l = (int)round(0.05*headTiltX);
+        int width = imgHead.getWidth();
+        int height = imgHead.getHeight();
+        float tiltPercent = (float)headTiltY/(10*(headTiltMax - headTiltMin));
+        int tiltDistance = (int)round(0.1*width*tiltPercent);
+
         Matrix tiltMatrix = new Matrix();
-        float[] src = {0, 0, 0, h, w, h, w, 0};
-        float [] dst = {0 - d, 0, 0 + d, h, w - d, h, w + d, 0};
+        float[] src = {0, 0, 0, height, width, height, width, 0};
+        float [] dst = {0 - tiltDistance, 0, 0 + tiltDistance, height, width - tiltDistance, height, width + tiltDistance, 0};
         tiltMatrix.setPolyToPoly(src, 0, dst, 0, 4);
-        head_x = screenWidth/2 - imgHead.getWidth()/2 - d;
+        head_x = screenWidth/2 - imgHead.getWidth()/2 - tiltDistance;
 
-        System.out.println("d: "+d);
-        System.out.println("p: "+p);
-
-        imgHeadSkew = Bitmap.createBitmap(imgHead, 0, 0, w, h, tiltMatrix, true);
+        imgHeadSkew = Bitmap.createBitmap(imgHead, 0, 0, width, height, tiltMatrix, true);
 
     }
 }
