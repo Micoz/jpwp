@@ -9,7 +9,7 @@ public class MainThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private boolean running;
-    public static Canvas canvas;
+    private static Canvas canvas;
 
     public MainThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
@@ -51,7 +51,6 @@ public class MainThread extends Thread {
                     }
                 }
             }
-
 
             timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - timeMillis;
