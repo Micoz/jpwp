@@ -5,7 +5,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
@@ -14,6 +18,7 @@ import static java.lang.StrictMath.round;
 public class Manekin {
     public Head head;
     public Body body;
+    private Paint paint = new Paint();
     private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
@@ -74,7 +79,11 @@ public class Manekin {
 
     public class Body {
         private int x, y;
+        private Rect area;
         private Bitmap img;
+        private Ring ring;
+        private double chestCircle;
+        private int chestCircleSpeed;
 
         public Body(Bitmap bmp, double scale) {
             img = Bitmap.createScaledBitmap(bmp,
@@ -84,6 +93,15 @@ public class Manekin {
 
             x = screenWidth/2 - img.getWidth()/2;
             y = screenHeight - img.getHeight();
+
+            area = new Rect(
+                    x + 3*img.getWidth()/10,
+                    y + 4*img.getHeight()/10,
+                    x + 7*img.getWidth()/10,
+                    y + 6*img.getHeight()/10
+            );
+            chestCircle = 0;
+            chestCircleSpeed = 1;
         }
     }
 
@@ -97,28 +115,84 @@ public class Manekin {
         body = new Body(BitmapFactory.decodeResource(context.getResources(),R.drawable.body), scale);
         head = new Head(BitmapFactory.decodeResource(context.getResources(),R.drawable.head), scale);
         head.setTilt(1000);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setColor(Color.GREEN);
+        paint.setAntiAlias(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.ADD));
+        body.ring = new Ring(body.x + body.img.getWidth() / 2, body.y + body.img.getHeight() / 2, 50);
     }
 
     public void update(){
         MotionEvent e = TouchListener.eventBuffer;
 
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (head.area.contains((int)e.getX(), (int)e.getY())) {
-                    head.setTilt((int) e.getY() - (int) e.getHistoricalY(0));
+        if (e != null) {
+
+            switch (GameView.GAME_STAGE) {
+                case 0: {
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            if (head.area.contains((int) e.getX(), (int) e.getY())) {
+                                head.setTilt((int) e.getY() - (int) e.getHistoricalY(0));
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            break;
+                        case MotionEvent.ACTION_OUTSIDE:
+                            break;
+                        default:
+                    }
+                    break;
                 }
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                break;
-            case MotionEvent.ACTION_OUTSIDE:
-                break;
-            default:
+                case 1: {
+                    switch (e.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            break;
+                        case MotionEvent.ACTION_OUTSIDE:
+                            break;
+                        default:
+                    }
+                    break;
+                }
+            }
         }
-        head.area = new Rect(head.x, head.y, head.x+head.img.getWidth(),head.y+head.img.getHeight());
+
+        head.area.set(
+                head.x,
+                head.y,
+                head.x+head.img.getWidth(),
+                head.y+head.img.getHeight()
+        );
+
+        body.area.set(
+                body.x + 3*body.img.getWidth()/10,
+                body.y + 4*body.img.getHeight()/10,
+                body.x + 7*body.img.getWidth()/10,
+                body.y + 6*body.img.getHeight()/10
+        );
+
+        if (body.chestCircleSpeed > 0) {
+            body.chestCircle += 1.2;
+            if (body.chestCircle > 20){
+                body.chestCircleSpeed = -1;
+            }
+        } else {
+            body.chestCircle -= 1.2;
+            if (body.chestCircle < 0){
+                body.chestCircleSpeed = 1;
+            }
+        }
+        body.ring.update();
     }
 
     public void draw(Canvas canvas){
@@ -128,5 +202,20 @@ public class Manekin {
         } else {
             canvas.drawBitmap(head.img, head.x, head.y, null);
         }
+
+        body.ring.draw(canvas);
+        //canvas.drawRect(body.area, paint);
+        //paint.setStyle(Paint.Style.STROKE);
+        /*for (int i=0; i<50; i++)
+        {
+
+            paint.setAlpha(200 - (i*4));
+            canvas.drawCircle(
+                    body.x + body.img.getWidth() / 2,
+                    body.y + body.img.getHeight() / 2,
+                    (body.img.getWidth() / 8) + (int)body.chestCircle + i,
+                    paint
+            );
+        }*/
     }
 }
