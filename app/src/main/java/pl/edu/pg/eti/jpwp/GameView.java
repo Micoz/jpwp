@@ -9,18 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Color;
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
-    private final int HAND_FOREHEAD_X = 388;
-    private final int HAND_FOREHEAD_Y = 169;
-    private final int HAND_CHIN_X = 395;
-    private final  int HAND_CHIN_Y = 747;
-
-    private final int RING_FOREHEAD_X = 360;
-    private final int RING_FOREHEAD_Y = 300;
-    private final int RING_CHIN_X = 360;
-    private final int RING_CHIN_Y = 600;
-
-    private final int HAND_DISTANCE = 120;
-
     private int x_old[] = {0, 0};
     private int y_old[] = {0, 0};
 
@@ -36,7 +24,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
-        new DrawableStorage(context);
+        new GlobalStorage(context);
         thread = new MainThread(getHolder(), this);
         hand = new Hand[2];
         ring = new Ring[2];
@@ -54,11 +42,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 for (int i = 0; i < 2; i += 1) {
                     hand[i] = new Hand(0,0);
                     hand[i].setVisible(false);
-                    ring[i] = new Ring(0,0,30);
+                    ring[i] = new Ring(0,0,25);
                     ring[i].setVisible(true);
                 }
-                ring[0].setPos(RING_FOREHEAD_X, RING_FOREHEAD_Y);
-                ring[1].setPos(RING_CHIN_X, RING_CHIN_Y);
+                ring[0].setPos(GlobalStorage.RING_FOREHEAD_X, GlobalStorage.RING_FOREHEAD_Y);
+                ring[1].setPos(GlobalStorage.RING_CHIN_X, GlobalStorage.RING_CHIN_Y);
                 GAME_STAGE = stage;
                 break;
         }
@@ -74,11 +62,11 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             for (int hi = 0; hi < 2; hi += 1) {
                 dist = Math.sqrt(Math.pow(ring[ri].getX() - x[hi], 2) + Math.pow(ring[ri].getY() + manekin.head.getTilt() - (y[hi] + hand[hi].getHeight()/2 +(ri * -1)*hand[hi].getHeight()), 2));
 
-                if (dist < HAND_DISTANCE) {
+                if (dist < GlobalStorage.HAND_DISTANCE) {
                     if (ri==0) {
-                        hand[hi].setPos(HAND_FOREHEAD_X, HAND_FOREHEAD_Y + 2*manekin.head.getTilt());
+                        hand[hi].setPos(GlobalStorage.HAND_FOREHEAD_X, GlobalStorage.HAND_FOREHEAD_Y + manekin.head.getTilt());
                     } else {
-                        hand[hi].setPos(HAND_CHIN_X, HAND_CHIN_Y + manekin.head.getTilt());
+                        hand[hi].setPos(GlobalStorage.HAND_CHIN_X, GlobalStorage.HAND_CHIN_Y + manekin.head.getTilt());
                     }
                     if (hand[hi].isVisible()) show = false;
                     stuck[hi]=true;
@@ -104,7 +92,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        //canvas.drawBitmap(DrawableStorage.imgBackground, 0, 0, null);
+        canvas.drawBitmap(GlobalStorage.imgBackground, 0, 0, null);
         manekin.draw(canvas);
         canvas.drawText("FPS:" + Long.toString(averageFPS),20,50, paint);
 
@@ -141,9 +129,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int pointerIndex = event.getActionIndex();
-        int pointerId = event.getPointerId(pointerIndex);
-
         switch (GAME_STAGE) {
             case 0: {
                 switch(event.getAction()) {
@@ -194,15 +179,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         if (holdingHead(x, y)) {
                             manekin.head.setTilt(( (y[0]-y_old[0]) + (y[1]-y_old[1]) )/2);
 
-                            ring[0].setPos(RING_FOREHEAD_X, RING_FOREHEAD_Y + manekin.head.getTilt());
-                            ring[1].setPos(RING_CHIN_X, RING_CHIN_Y + manekin.head.getTilt());
+                            ring[0].setPos(GlobalStorage.RING_FOREHEAD_X, GlobalStorage.RING_FOREHEAD_Y + manekin.head.getTilt());
+                            ring[1].setPos(GlobalStorage.RING_CHIN_X, GlobalStorage.RING_CHIN_Y + manekin.head.getTilt());
 
                             if (hand[0].getY() < hand[1].getY()) {
-                                hand[0].setPos(HAND_FOREHEAD_X, HAND_FOREHEAD_Y + 2*manekin.head.getTilt());
-                                hand[1].setPos(HAND_CHIN_X, HAND_CHIN_Y + manekin.head.getTilt());
+                                hand[0].setPos(GlobalStorage.HAND_FOREHEAD_X, GlobalStorage.HAND_FOREHEAD_Y + manekin.head.getTilt());
+                                hand[1].setPos(GlobalStorage.HAND_CHIN_X, GlobalStorage.HAND_CHIN_Y + manekin.head.getTilt());
                             } else {
-                                hand[0].setPos(HAND_CHIN_X, HAND_CHIN_Y + manekin.head.getTilt());
-                                hand[1].setPos(HAND_FOREHEAD_X, HAND_FOREHEAD_Y + 2*manekin.head.getTilt());
+                                hand[0].setPos(GlobalStorage.HAND_CHIN_X, GlobalStorage.HAND_CHIN_Y + manekin.head.getTilt());
+                                hand[1].setPos(GlobalStorage.HAND_FOREHEAD_X, GlobalStorage.HAND_FOREHEAD_Y + manekin.head.getTilt());
                             }
                         }
                         x_old = x;

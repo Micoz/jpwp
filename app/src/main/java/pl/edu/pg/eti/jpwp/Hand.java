@@ -1,28 +1,21 @@
 package pl.edu.pg.eti.jpwp;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import static java.lang.Math.round;
-
 public class Hand {
-    private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
     private int x, y;
     private int offset;
-    private int changeHeight;
-    private boolean stuck;
     private boolean visible;
     private Bitmap img;
 
     public Hand(int x, int y) {
         this.x = 0;
         this.y = 0;
-        changeHeight = (int)round(0.3*screenHeight);
-        if (y >= changeHeight) {
-            img = DrawableStorage.imgHandDown;
+        if (y >= GlobalStorage.HAND_FLIP_Y) {
+            img = GlobalStorage.imgHandDown;
         } else {
-            img = DrawableStorage.imgHandUp;
+            img = GlobalStorage.imgHandUp;
         }
         this.visible = true;
 
@@ -35,14 +28,6 @@ public class Hand {
 
     public boolean isVisible() {
         return visible;
-    }
-
-    public void setStuck(boolean s) {
-        stuck = s;
-    }
-
-    public boolean isStuck() {
-        return stuck;
     }
 
     public int getX() {
@@ -58,26 +43,24 @@ public class Hand {
     }
 
     public void setPos(int x, int y) {
-        if (!stuck) {
-            if (y < changeHeight) {
-                if (this.y >= changeHeight) img = DrawableStorage.imgHandUp;
-                if (changeHeight - y < img.getHeight()) {
-                    offset = -(img.getHeight()/2 - (changeHeight - y)/2);
-                } else {
-                    offset = 0;
-                }
+        if (y < GlobalStorage.HAND_FLIP_Y) {
+            if (this.y >= GlobalStorage.HAND_FLIP_Y) img = GlobalStorage.imgHandUp;
+            if (GlobalStorage.HAND_FLIP_Y - y < img.getHeight()) {
+                offset = -(img.getHeight()/2 - (GlobalStorage.HAND_FLIP_Y - y)/2);
+            } else {
+                offset = 0;
             }
-            if (y > changeHeight) {
-                if (this.y <= changeHeight) img = DrawableStorage.imgHandDown;
-                if (y - changeHeight < img.getHeight()) {
-                    offset = -(img.getHeight()/2 + (y - changeHeight)/2);
-                } else {
-                    offset = -img.getHeight();
-                }
-            }
-            this.x = x;
-            this.y = y;
         }
+        if (y > GlobalStorage.HAND_FLIP_Y) {
+            if (this.y <= GlobalStorage.HAND_FLIP_Y) img = GlobalStorage.imgHandDown;
+            if (y - GlobalStorage.HAND_FLIP_Y < img.getHeight()) {
+                offset = -(img.getHeight()/2 + (y - GlobalStorage.HAND_FLIP_Y)/2);
+            } else {
+                offset = -img.getHeight();
+            }
+        }
+        this.x = x;
+        this.y = y;
     }
 
     public void draw(Canvas canvas) {

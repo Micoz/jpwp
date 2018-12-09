@@ -16,35 +16,32 @@ public class Manekin {
     public class Head {
         private int x, y;
         private int tilt;
-        private final int MAX_Y, MIN_Y;
         private Bitmap img, imgTilted;
 
         public Head() {
-            img = DrawableStorage.imgHead;
-
-            MAX_Y = screenHeight - body.img.getHeight() - (int)round(0.65 * img.getHeight());
-            MIN_Y = screenHeight - body.img.getHeight() - (int)round(0.83 * img.getHeight());
+            img = GlobalStorage.imgHead;
+            imgTilted = img;
 
             x = screenWidth / 2 - img.getWidth() / 2;
-            y = MIN_Y;
+            y = GlobalStorage.HEAD_MIN_Y;
         }
 
         public void setTilt(int dt) {
             tilt += dt;
 
-            y = MIN_Y + tilt/2;
-            if (y > MAX_Y) {
-                y = MAX_Y;
-                tilt = 2 * (MAX_Y - MIN_Y);
+            y = GlobalStorage.HEAD_MIN_Y + tilt/2;
+            if (y > GlobalStorage.HEAD_MAX_Y) {
+                y = GlobalStorage.HEAD_MAX_Y;
+                tilt = 2 * (GlobalStorage.HEAD_MAX_Y - GlobalStorage.HEAD_MIN_Y);
             }
-            if (y < MIN_Y) {
-                y = MIN_Y;
+            if (y < GlobalStorage.HEAD_MIN_Y) {
+                y = GlobalStorage.HEAD_MIN_Y;
                 tilt = 0;
             }
 
             int width = img.getWidth();
             int height = img.getHeight();
-            float tiltPercent = (float) tilt / (2 * (MAX_Y - MIN_Y));
+            float tiltPercent = (float) tilt / (2 * (GlobalStorage.HEAD_MAX_Y - GlobalStorage.HEAD_MIN_Y));
             int tiltDistance = (int) round(0.1 * width * tiltPercent);
 
             Matrix tiltMatrix = new Matrix();
@@ -71,7 +68,7 @@ public class Manekin {
         private Bitmap img;
 
         public Body() {
-            img = DrawableStorage.imgBody;
+            img = GlobalStorage.imgBody;
 
             x = screenWidth/2 - img.getWidth()/2;
             y = screenHeight - img.getHeight();
@@ -93,7 +90,7 @@ public class Manekin {
 
     public void draw(Canvas canvas){
         canvas.drawBitmap(body.img, body.x, body.y, null);
-        if (head.y != head.MIN_Y) {
+        if (head.y != GlobalStorage.HEAD_MIN_Y) {
             canvas.drawBitmap(head.imgTilted, head.x, head.y, null);
         } else {
             canvas.drawBitmap(head.img, head.x, head.y, null);

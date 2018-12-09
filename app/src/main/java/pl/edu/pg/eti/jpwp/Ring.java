@@ -17,7 +17,7 @@ public class Ring {
         this.y = y;
         this.radius = radius;
         size = 0;
-        pulse = 2;
+        pulse = 1;
         this.visible = true;
         paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -46,7 +46,7 @@ public class Ring {
     }
 
     public void update() {
-        if ((size > 20)||(size < -20)) {
+        if ((size > 8)||(size < -8)) {
             pulse = -pulse;
         }
         size += pulse;
@@ -54,8 +54,8 @@ public class Ring {
 
     public void draw(Canvas canvas) {
         if (visible) {
-            for (int i = 0; i < 30; i++) {
-                paint.setAlpha(210 - (i * 7));
+            for (int i = 0; i < 20; i++) {
+                paint.setAlpha(200 - (i * 10));
                 canvas.drawCircle(x, y, radius + size + i, paint);
             }
         }
