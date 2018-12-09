@@ -5,7 +5,7 @@ import android.view.SurfaceHolder;
 import java.lang.Thread;
 
 public class MainThread extends Thread {
-    private int targetFPS = 60;
+    private int targetFPS = 30;
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private boolean running;
@@ -67,7 +67,7 @@ public class MainThread extends Thread {
                 GameView.averageFPS = averageFPS;
                 frameCount = 0;
                 totalTime = 0;
-                System.out.println(averageFPS);
+                //System.out.println(averageFPS);
             }
         }
     }
