@@ -36,6 +36,7 @@ public class GlobalStorage {
     public static Bitmap imgRing;
     public static Bitmap imgHandUp;
     public static Bitmap imgHandDown;
+    public static Bitmap imgIconOk;
 
     public GlobalStorage(Context context){
 
@@ -58,13 +59,6 @@ public class GlobalStorage {
                 (int)round(YScale * 352),
                 true);
 
-        imgRing = Bitmap.createScaledBitmap(
-                BitmapFactory.decodeResource(context.getResources(),R.drawable.ring),
-                (int)round(XScale * 40),
-                (int)round(XScale * 40),
-                true
-        );
-
         imgHandDown = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeResource(context.getResources(),R.drawable.hand_down),
                 (int)round(XScale * 240),
@@ -76,6 +70,13 @@ public class GlobalStorage {
                 BitmapFactory.decodeResource(context.getResources(),R.drawable.hand_up),
                 (int)round(XScale * 240),
                 (int)round(XScale * 240),
+                true
+        );
+
+        imgIconOk = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(context.getResources(),R.drawable.icon_ok),
+                (int)round(XScale * 128),
+                (int)round(XScale * 128),
                 true
         );
 

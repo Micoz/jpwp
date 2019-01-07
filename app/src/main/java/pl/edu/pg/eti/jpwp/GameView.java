@@ -17,6 +17,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private static Manekin manekin;
     private Hand[] hand;
     private Ring[] ring;
+    private IconOk icon;
 
     public static long averageFPS;
     public static int GAME_STAGE;
@@ -36,7 +37,9 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void changeGameStage(int stage) {
-        switch (stage) {
+        GAME_STAGE = stage;
+
+        switch (GAME_STAGE) {
             case 0:
                 manekin = new Manekin();
                 for (int i = 0; i < 2; i += 1) {
@@ -45,9 +48,17 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     ring[i] = new Ring(0,0,25);
                     ring[i].setVisible(true);
                 }
-                ring[0].setPos(GlobalStorage.RING_FOREHEAD_X, GlobalStorage.RING_FOREHEAD_Y);
-                ring[1].setPos(GlobalStorage.RING_CHIN_X, GlobalStorage.RING_CHIN_Y);
-                GAME_STAGE = stage;
+                ring[0].setPos(GlobalStorage.RING_FOREHEAD_X, GlobalStorage.RING_FOREHEAD_Y + manekin.head.getTilt());
+                ring[1].setPos(GlobalStorage.RING_CHIN_X, GlobalStorage.RING_CHIN_Y + manekin.head.getTilt());
+                break;
+
+            case 1:
+                for (int i = 0; i < 2; i += 1) {
+                    ring[i] = new Ring(0,0,25);
+                    ring[i].setVisible(false);
+                    hand[i].setVisible(false);
+                }
+                icon = new IconOk(400, 400);
                 break;
         }
     }
@@ -84,6 +95,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                     ring[i].update();
                 }
                 manekin.update();
+                if (manekin.head.isLifted()) {
+                    changeGameStage(1);
+                }
+                break;
+
+            case 1:
+                icon.update();
                 break;
         }
     }
@@ -100,6 +118,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             hand[i].draw(canvas);
             ring[i].draw(canvas);
         }
+        icon.draw(canvas);
     }
 
     @Override
@@ -131,15 +150,15 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public boolean onTouchEvent(MotionEvent event) {
         switch (GAME_STAGE) {
             case 0: {
-                switch(event.getAction()) {
+                switch (event.getAction()) {
 
                     case MotionEvent.ACTION_DOWN:
                         hand[0].setPos((int) event.getX(0), (int) event.getY(0));
                         hand[0].setVisible(true);
-                        return true;
+                        break;
 
                     case MotionEvent.ACTION_UP:
-                        for (int i=0; i<2; i+=1) {
+                        for (int i = 0; i < 2; i += 1) {
                             hand[i].setVisible(false);
                             ring[i].setVisible(true);
                         }
@@ -148,12 +167,12 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         break;
 
                     case MotionEvent.ACTION_MOVE:
-                        int[] x = {(int)event.getX(), 0};
-                        int[] y = {(int)event.getY(), 0};
+                        int[] x = {(int) event.getX(), 0};
+                        int[] y = {(int) event.getY(), 0};
 
                         if (event.getPointerCount() >= 2) {
-                            x[1] = (int)event.getX(1);
-                            y[1] = (int)event.getY(1);
+                            x[1] = (int) event.getX(1);
+                            y[1] = (int) event.getY(1);
 
                             for (int i = 0; i < 2; i += 1) {
                                 if (!hand[i].isVisible()) {
@@ -171,13 +190,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                             }
                         }
 
-                        for (int i=0; i<2; i+=1) {
+                        for (int i = 0; i < 2; i += 1) {
                             if (x_old[i] == 0) x_old[i] = x[i];
                             if (y_old[i] == 0) y_old[i] = y[i];
                         }
 
                         if (holdingHead(x, y)) {
-                            manekin.head.setTilt(( (y[0]-y_old[0]) + (y[1]-y_old[1]) )/2);
+                            manekin.head.setTilt(((y[0] - y_old[0]) + (y[1] - y_old[1])) / 2);
 
                             ring[0].setPos(GlobalStorage.RING_FOREHEAD_X, GlobalStorage.RING_FOREHEAD_Y + manekin.head.getTilt());
                             ring[1].setPos(GlobalStorage.RING_CHIN_X, GlobalStorage.RING_CHIN_Y + manekin.head.getTilt());
@@ -195,7 +214,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                         break;
 
                     case MotionEvent.ACTION_CANCEL:
-                        for (int i=0; i<2; i+=1) {
+                        for (int i = 0; i < 2; i += 1) {
                             hand[i].setVisible(false);
                             ring[i].setVisible(true);
                         }
@@ -203,8 +222,13 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 }
                 break;
             }
+
             case 1: {
-                break;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        icon = new IconOk((int) event.getX(), (int) event.getY());
+                        break;
+                }
             }
         }
 
