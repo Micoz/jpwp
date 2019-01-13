@@ -35,6 +35,7 @@ public class GlobalStorage {
     public static Bitmap imgHead;
     public static Bitmap imgHandUp;
     public static Bitmap imgHandDown;
+    public static Bitmap imgIconOk;
 
     public GlobalStorage(Context context){
 
@@ -68,6 +69,13 @@ public class GlobalStorage {
                 BitmapFactory.decodeResource(context.getResources(),R.drawable.hand_up),
                 (int)round(XScale * 240),
                 (int)round(XScale * 240),
+                true
+        );
+
+        imgIconOk = Bitmap.createScaledBitmap(
+                BitmapFactory.decodeResource(context.getResources(),R.drawable.icon_ok),
+                (int)round(XScale * 128),
+                (int)round(XScale * 128),
                 true
         );
 

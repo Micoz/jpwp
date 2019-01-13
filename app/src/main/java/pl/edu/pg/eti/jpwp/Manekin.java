@@ -24,6 +24,8 @@ public class Manekin {
 
             x = screenWidth / 2 - img.getWidth() / 2;
             y = GlobalStorage.HEAD_MIN_Y;
+
+            setTilt(9999);
         }
 
         public void setTilt(int dt) {
@@ -56,6 +58,8 @@ public class Manekin {
         public int getTilt() {
             return tilt/2;
         }
+
+        public boolean isLifted() { return (tilt==0);}
 
     }
 
