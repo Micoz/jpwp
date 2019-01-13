@@ -131,7 +131,6 @@ public class MainMenu {
                 if (highlight[i+1]) {
                     paint.setColor(0xEECCCCCC);
                     canvas.drawBitmap(GlobalStorage.imgMenuButtonPressed, button[i+1].left, button[i+1].top, null);
-                    //canvas.drawText(text[i], button[i+1].left + (button[i+1].width()/2) - round((0.5f * text[i].length()) * button[i+1].width() / 10), button[i+1].top + (6*button[i+1].height() / 10), paint);
                     canvas.drawText(text[i], button[i+1].left + (button[i+1].width()/2), button[i+1].top + (6*button[i+1].height() / 10), paint);
                 } else {
                     paint.setColor(0xEEEEEEEE);

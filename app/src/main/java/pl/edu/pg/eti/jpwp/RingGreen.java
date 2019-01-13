@@ -4,24 +4,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-public class Ring {
+public class RingGreen {
     private int x, y;
     private int radius;
     private int size;
     private int pulse;
     private boolean visible;
-    private Paint paint;
 
-    public Ring(int x, int y, int radius){
+    public RingGreen(int x, int y, int radius){
         this.x = x;
         this.y = y;
         this.radius = radius;
         size = 0;
         pulse = 1;
-        this.visible = true;
-        paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.GREEN);
+        visible = true;
     }
 
     public void setVisible(boolean v) {
@@ -46,14 +42,20 @@ public class Ring {
     }
 
     public void update() {
-        if ((size > 8)||(size < -8)) {
-            pulse = -pulse;
+        if (visible) {
+            if ((size > 8) || (size < -8)) {
+                pulse = -pulse;
+            }
+            size += pulse;
         }
-        size += pulse;
     }
 
     public void draw(Canvas canvas) {
         if (visible) {
+            Paint paint = new Paint();
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setColor(Color.GREEN);
+
             for (int i = 0; i < 20; i++) {
                 paint.setAlpha(200 - (i * 10));
                 canvas.drawCircle(x, y, radius + size + i, paint);

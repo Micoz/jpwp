@@ -56,6 +56,11 @@ public class TempoBar {
         return status;
     }
 
+    public void restart() {
+        start = false;
+        status = 10;
+    }
+
     public void setVisible(boolean v) {
         visible = v;
     }

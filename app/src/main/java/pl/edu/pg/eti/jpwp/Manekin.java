@@ -1,31 +1,30 @@
 package pl.edu.pg.eti.jpwp;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 
 import static java.lang.Math.round;
+import static java.lang.Math.signum;
 
 public class Manekin {
+    private int x, y;
+    private Bitmap img;
+    private boolean bonded;
     public Head head;
     public Body body;
-    private int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
-    private int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
     public class Head {
         private int x, y;
         private int tilt;
-        private Bitmap img, imgTilted;
+        private Bitmap img;
 
         public Head() {
             img = GlobalStorage.imgHead;
-            imgTilted = img;
 
-            x = screenWidth / 2 - img.getWidth() / 2;
+            x = GlobalStorage.screenWidth / 2 - img.getWidth() / 2;
             y = GlobalStorage.HEAD_MIN_Y;
-
-            setTilt(9999);
         }
 
         public void setTilt(int dt) {
@@ -41,25 +40,23 @@ public class Manekin {
                 tilt = 0;
             }
 
-            int width = img.getWidth();
-            int height = img.getHeight();
+            int width = GlobalStorage.imgHead.getWidth();
+            int height = GlobalStorage.imgHead.getHeight();
             float tiltPercent = (float) tilt / (2 * (GlobalStorage.HEAD_MAX_Y - GlobalStorage.HEAD_MIN_Y));
-            int tiltDistance = (int) round(0.1 * width * tiltPercent);
+            int tiltDistance = round(0.1f * width * tiltPercent);
 
             Matrix tiltMatrix = new Matrix();
             float[] src = {0, 0, 0, height, width, height, width, 0};
             float[] dst = {0 - tiltDistance, 0, 0 + tiltDistance, height, width - tiltDistance, height, width + tiltDistance, 0};
             tiltMatrix.setPolyToPoly(src, 0, dst, 0, 4);
-            x = screenWidth / 2 - img.getWidth() / 2 - tiltDistance;
+            x = GlobalStorage.screenWidth / 2 - width / 2 - tiltDistance;
 
-            imgTilted = Bitmap.createBitmap(img, 0, 0, width, height, tiltMatrix, true);
+            img = Bitmap.createBitmap(GlobalStorage.imgHead, 0, 0, width, height, tiltMatrix, true);
         }
 
         public int getTilt() {
             return tilt/2;
         }
-
-        public boolean isLifted() { return (tilt==0);}
 
     }
 
@@ -74,8 +71,8 @@ public class Manekin {
         public Body() {
             img = GlobalStorage.imgBody;
 
-            x = screenWidth/2 - img.getWidth()/2;
-            y = screenHeight - img.getHeight();
+            x = GlobalStorage.screenWidth/2 - img.getWidth()/2;
+            y = GlobalStorage.screenHeight - img.getHeight();
         }
     }
 
@@ -84,8 +81,16 @@ public class Manekin {
      */
 
     public Manekin(){
+        img = GlobalStorage.imgManekin;
+        x = GlobalStorage.screenWidth/2 - img.getWidth()/2;
+        y = GlobalStorage.screenHeight - img.getHeight();
+        bonded = true;
         body = new Body();
         head = new Head();
+    }
+
+    public void setBind(boolean bond) {
+        bonded = bond;
     }
 
     public void update(){
@@ -93,10 +98,10 @@ public class Manekin {
     }
 
     public void draw(Canvas canvas){
-        canvas.drawBitmap(body.img, body.x, body.y, null);
-        if (head.y != GlobalStorage.HEAD_MIN_Y) {
-            canvas.drawBitmap(head.imgTilted, head.x, head.y, null);
+        if (bonded) {
+            canvas.drawBitmap(img, x, y, null);
         } else {
+            canvas.drawBitmap(body.img, body.x, body.y, null);
             canvas.drawBitmap(head.img, head.x, head.y, null);
         }
     }

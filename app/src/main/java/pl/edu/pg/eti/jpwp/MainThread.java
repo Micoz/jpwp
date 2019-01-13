@@ -67,7 +67,7 @@ public class MainThread extends Thread {
                 GameView.averageFPS = averageFPS;
                 frameCount = 0;
                 totalTime = 0;
-                //System.out.println(averageFPS);
+                System.out.println(averageFPS);
             }
         }
     }
