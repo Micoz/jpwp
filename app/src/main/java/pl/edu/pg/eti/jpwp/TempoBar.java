@@ -7,6 +7,10 @@ import android.graphics.Rect;
 import static java.lang.Math.round;
 import static java.lang.Math.signum;
 
+/**
+ * Wykonuje pomiar szybkości wykonywania ucisków na klatkę piersiową manekina i wizualizację.
+ */
+
 public class TempoBar {
     private Rect bar;
     private int x, xPos;

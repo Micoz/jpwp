@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 
 import static java.lang.Math.round;
 
+/**
+ * Klasa zawierająca wszystkie stałe globalne i wgrane elementy graficzne.
+ */
+
 public class GlobalStorage {
     public static final int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
     public static final int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;

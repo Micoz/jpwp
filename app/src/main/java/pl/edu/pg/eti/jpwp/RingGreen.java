@@ -4,6 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+/**
+ * Pierścień zielony, element interaktywno-wizualizacyjny.
+ */
+
 public class RingGreen {
     private int x, y;
     private int radius;

@@ -5,10 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.telephony.gsm.GsmCellLocation;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+/**
+ * Klasa obsługująca wyświetlanie obiektów, ich aktualizację oraz dotyk.
+ */
 
 class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int oldX[] = {0, 0};
@@ -55,7 +58,7 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 manekin.setBind(false);
                 manekin.head.setTilt(9999);
                 counter = 0;
-                timer = 1830;
+                timer = 3630;
                 error = 0;
                 idle = 0;
                 for (int i = 0; i < 2; i += 1) {
@@ -104,8 +107,6 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 iconOk.setVisible(false);
                 break;
         }
-
-        System.out.println("changeGameStage: " + GAME_STAGE);
     }
 
     public boolean holdingHead(int[] x, int[] y) {
@@ -240,22 +241,22 @@ class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if (warning.isOver()) {
                 paint.setColor(0xFFff6666);
                 paint.setTextAlign(Paint.Align.CENTER);
-                canvas.drawText("NASTĄPIŁA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.7f, paint);
-                canvas.drawText("NAGŁA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.8f, paint);
-                canvas.drawText("ŚMIERĆ", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
+                canvas.drawText("NASTAPILA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.7f, paint);
+                canvas.drawText("NAGLA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.8f, paint);
+                canvas.drawText("SMIERC", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
             } else
             if (error <= 4) {
                 paint.setColor(0xFF6dff74);
                 paint.setTextAlign(Paint.Align.CENTER);
                 canvas.drawText("RESUSCYTACJA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.7f, paint);
                 canvas.drawText("WYKONANA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.8f, paint);
-                canvas.drawText("PRAWIDŁOWO", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
+                canvas.drawText("PRAWIDLOWO", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
             } else {
                 paint.setColor(0xFFff8800);
                 paint.setTextAlign(Paint.Align.CENTER);
                 canvas.drawText("RESUSCYTACJA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.7f, paint);
                 canvas.drawText("WYKONANA", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.8f, paint);
-                canvas.drawText("Z BŁĘDAMI", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
+                canvas.drawText("Z BLEDAMI", GlobalStorage.screenWidth/2, GlobalStorage.screenHeight * 0.9f, paint);
             }
         }
         Paint paint = new Paint();

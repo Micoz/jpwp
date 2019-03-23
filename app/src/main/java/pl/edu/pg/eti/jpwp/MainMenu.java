@@ -5,6 +5,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
+/**
+ * Menu główne gry.
+ */
+
 public class MainMenu {
     private boolean open = false;
     private long timer = 0;
@@ -29,9 +33,9 @@ public class MainMenu {
             );
         }
 
-        text[0] = "POWRÓT";
+        text[0] = "POWROT";
         text[1] = "RESTART";
-        text[2] = "ZAKOŃCZ";
+        text[2] = "ZAKONCZ";
     }
 
     public boolean touched(MotionEvent event) {

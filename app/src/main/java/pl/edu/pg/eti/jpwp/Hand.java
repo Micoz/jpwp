@@ -3,6 +3,10 @@ package pl.edu.pg.eti.jpwp;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+/**
+ * Dłoń do podnoszenia głowy manekina.
+ */
+
 public class Hand {
     private int x, y;
     private int offset;

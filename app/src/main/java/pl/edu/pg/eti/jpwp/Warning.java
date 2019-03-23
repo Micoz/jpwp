@@ -5,6 +5,10 @@ import android.graphics.Paint;
 
 import java.util.Random;
 
+/**
+ * Realizuje powiadomienie o zbyt długim czasie oczekiwania na akcję.
+ */
+
 public class Warning {
     private int x, y;
     private int xRand, yRand;

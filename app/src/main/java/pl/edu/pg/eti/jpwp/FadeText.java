@@ -3,6 +3,10 @@ package pl.edu.pg.eti.jpwp;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+/**
+ * Wyświetla tekst, który zanika po danym czasie.
+ */
+
 public class FadeText {
     private int x, y;
     private int alpha;

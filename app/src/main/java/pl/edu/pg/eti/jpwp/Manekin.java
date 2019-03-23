@@ -8,6 +8,10 @@ import android.graphics.Rect;
 import static java.lang.Math.round;
 import static java.lang.Math.signum;
 
+/**
+ * Manekin.
+ */
+
 public class Manekin {
     private int x, y;
     private Bitmap img;

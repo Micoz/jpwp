@@ -3,6 +3,10 @@ package pl.edu.pg.eti.jpwp;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+/**
+ * Pierścień czerwony, element interaktywno-wizualizacyjny.
+ */
+
 public class RingRed {
     private int x, y;
     private int radius;

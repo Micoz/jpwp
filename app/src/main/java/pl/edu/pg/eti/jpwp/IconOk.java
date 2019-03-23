@@ -4,6 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
+/**
+ * Ikona znikająca po czasie 1s.
+ */
+
 public class IconOk {
     private int x, y;
     private float angle;

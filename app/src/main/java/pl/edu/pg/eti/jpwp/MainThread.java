@@ -4,6 +4,10 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 import java.lang.Thread;
 
+/**
+ * Wątek główny aplikacji, powoduje aktualizację stanu gry i obrazu 30 razy na sekundę.
+ */
+
 public class MainThread extends Thread {
     private int targetFPS = 30;
     private SurfaceHolder surfaceHolder;
